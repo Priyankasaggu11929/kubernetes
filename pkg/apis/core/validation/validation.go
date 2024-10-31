@@ -3149,6 +3149,7 @@ type commonHandler struct {
 	TCPSocket *core.TCPSocketAction
 	GRPC      *core.GRPCAction
 	Sleep     *core.SleepAction
+	Bleep     *core.BleepAction
 }
 
 func handlerFromProbe(ph *core.ProbeHandler) commonHandler {
@@ -3166,8 +3167,22 @@ func handlerFromLifecycle(lh *core.LifecycleHandler) commonHandler {
 		HTTPGet:   lh.HTTPGet,
 		TCPSocket: lh.TCPSocket,
 		Sleep:     lh.Sleep,
+		Bleep:     lh.Bleep,
 	}
 }
+
+func validateBleepAction(bleep *core.BleepAction, gracePeriod *int64, fldPath *field.Path) field.ErrorList {
+	allErrors := field.ErrorList{}
+	// We allow gracePeriod to be nil here because the pod in which this SleepAction
+	// is defined might have an invalid grace period defined, and we don't want to
+	// flag another error here when the real problem will already be flagged.
+	if gracePeriod != nil && bleep.Seconds <= 0 || bleep.Seconds > *gracePeriod {
+		invalidStr := fmt.Sprintf("must be greater than 0 and less than terminationGracePeriodSeconds (%d)", *gracePeriod)
+		allErrors = append(allErrors, field.Invalid(fldPath, bleep.Seconds, invalidStr))
+	}
+	return allErrors
+}
+
 
 func validateSleepAction(sleep *core.SleepAction, gracePeriod *int64, fldPath *field.Path) field.ErrorList {
 	allErrors := field.ErrorList{}
@@ -3330,6 +3345,14 @@ func validateHandler(handler commonHandler, gracePeriod *int64, fldPath *field.P
 		} else {
 			numHandlers++
 			allErrors = append(allErrors, validateSleepAction(handler.Sleep, gracePeriod, fldPath.Child("sleep"))...)
+		}
+	}
+	if handler.Bleep != nil {
+		if numHandlers > 0 {
+			allErrors = append(allErrors, field.Forbidden(fldPath.Child("bleep"), "may not specify more than 1 handler type"))
+		} else {
+			numHandlers++
+			allErrors = append(allErrors, validateBleepAction(handler.Bleep, gracePeriod, fldPath.Child("bleep"))...)
 		}
 	}
 	if numHandlers == 0 {
