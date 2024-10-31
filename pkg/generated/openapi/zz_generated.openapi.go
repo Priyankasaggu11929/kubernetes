@@ -391,6 +391,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"k8s.io/api/core/v1.AzureFilePersistentVolumeSource":                                                    schema_k8sio_api_core_v1_AzureFilePersistentVolumeSource(ref),
 		"k8s.io/api/core/v1.AzureFileVolumeSource":                                                              schema_k8sio_api_core_v1_AzureFileVolumeSource(ref),
 		"k8s.io/api/core/v1.Binding":                                                                            schema_k8sio_api_core_v1_Binding(ref),
+		"k8s.io/api/core/v1.BleepAction":                                                                        schema_k8sio_api_core_v1_BleepAction(ref),
 		"k8s.io/api/core/v1.CSIPersistentVolumeSource":                                                          schema_k8sio_api_core_v1_CSIPersistentVolumeSource(ref),
 		"k8s.io/api/core/v1.CSIVolumeSource":                                                                    schema_k8sio_api_core_v1_CSIVolumeSource(ref),
 		"k8s.io/api/core/v1.Capabilities":                                                                       schema_k8sio_api_core_v1_Capabilities(ref),
@@ -19587,6 +19588,28 @@ func schema_k8sio_api_core_v1_Binding(ref common.ReferenceCallback) common.OpenA
 	}
 }
 
+func schema_k8sio_api_core_v1_BleepAction(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "BleepAction describes a \"bleep\" action.",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"seconds": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Seconds is the number of seconds to sleep.",
+							Default:     0,
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+				},
+				Required: []string{"seconds"},
+			},
+		},
+	}
+}
+
 func schema_k8sio_api_core_v1_CSIPersistentVolumeSource(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -23738,11 +23761,17 @@ func schema_k8sio_api_core_v1_LifecycleHandler(ref common.ReferenceCallback) com
 							Ref:         ref("k8s.io/api/core/v1.SleepAction"),
 						},
 					},
+					"bleep": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Bleep represents the duration that the container should sleep before being terminated.",
+							Ref:         ref("k8s.io/api/core/v1.BleepAction"),
+						},
+					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/api/core/v1.ExecAction", "k8s.io/api/core/v1.HTTPGetAction", "k8s.io/api/core/v1.SleepAction", "k8s.io/api/core/v1.TCPSocketAction"},
+			"k8s.io/api/core/v1.BleepAction", "k8s.io/api/core/v1.ExecAction", "k8s.io/api/core/v1.HTTPGetAction", "k8s.io/api/core/v1.SleepAction", "k8s.io/api/core/v1.TCPSocketAction"},
 	}
 }
 

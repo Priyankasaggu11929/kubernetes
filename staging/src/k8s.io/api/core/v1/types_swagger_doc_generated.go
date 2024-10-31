@@ -126,6 +126,15 @@ func (Binding) SwaggerDoc() map[string]string {
 	return map_Binding
 }
 
+var map_BleepAction = map[string]string{
+	"":        "BleepAction describes a \"bleep\" action.",
+	"seconds": "Seconds is the number of seconds to sleep.",
+}
+
+func (BleepAction) SwaggerDoc() map[string]string {
+	return map_BleepAction
+}
+
 var map_CSIPersistentVolumeSource = map[string]string{
 	"":                           "Represents storage that is managed by an external CSI volume driver (Beta feature)",
 	"driver":                     "driver is the name of the driver to use for this volume. Required.",
@@ -971,6 +980,7 @@ var map_LifecycleHandler = map[string]string{
 	"httpGet":   "HTTPGet specifies the http request to perform.",
 	"tcpSocket": "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified.",
 	"sleep":     "Sleep represents the duration that the container should sleep before being terminated.",
+	"bleep":     "Bleep represents the duration that the container should sleep before being terminated.",
 }
 
 func (LifecycleHandler) SwaggerDoc() map[string]string {

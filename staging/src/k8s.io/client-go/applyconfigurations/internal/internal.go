@@ -4560,6 +4560,13 @@ var schemaYAML = typed.YAMLObject(`types:
       type:
         scalar: string
       default: ""
+- name: io.k8s.api.core.v1.BleepAction
+  map:
+    fields:
+    - name: seconds
+      type:
+        scalar: numeric
+      default: 0
 - name: io.k8s.api.core.v1.CSIPersistentVolumeSource
   map:
     fields:
@@ -5859,6 +5866,9 @@ var schemaYAML = typed.YAMLObject(`types:
 - name: io.k8s.api.core.v1.LifecycleHandler
   map:
     fields:
+    - name: bleep
+      type:
+        namedType: io.k8s.api.core.v1.BleepAction
     - name: exec
       type:
         namedType: io.k8s.api.core.v1.ExecAction

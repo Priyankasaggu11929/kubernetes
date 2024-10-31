@@ -25,6 +25,7 @@ type LifecycleHandlerApplyConfiguration struct {
 	HTTPGet   *HTTPGetActionApplyConfiguration   `json:"httpGet,omitempty"`
 	TCPSocket *TCPSocketActionApplyConfiguration `json:"tcpSocket,omitempty"`
 	Sleep     *SleepActionApplyConfiguration     `json:"sleep,omitempty"`
+	Bleep     *BleepActionApplyConfiguration     `json:"bleep,omitempty"`
 }
 
 // LifecycleHandlerApplyConfiguration constructs a declarative configuration of the LifecycleHandler type for use with
@@ -62,5 +63,13 @@ func (b *LifecycleHandlerApplyConfiguration) WithTCPSocket(value *TCPSocketActio
 // If called multiple times, the Sleep field is set to the value of the last call.
 func (b *LifecycleHandlerApplyConfiguration) WithSleep(value *SleepActionApplyConfiguration) *LifecycleHandlerApplyConfiguration {
 	b.Sleep = value
+	return b
+}
+
+// WithBleep sets the Bleep field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the Bleep field is set to the value of the last call.
+func (b *LifecycleHandlerApplyConfiguration) WithBleep(value *BleepActionApplyConfiguration) *LifecycleHandlerApplyConfiguration {
+	b.Bleep = value
 	return b
 }

@@ -191,6 +191,12 @@ message Binding {
   optional ObjectReference target = 2;
 }
 
+// BleepAction describes a "bleep" action.
+message BleepAction {
+  // Seconds is the number of seconds to sleep.
+  optional int64 seconds = 1;
+}
+
 // Represents storage that is managed by an external CSI volume driver (Beta feature)
 message CSIPersistentVolumeSource {
   // driver is the name of the driver to use for this volume.
@@ -2220,6 +2226,11 @@ message LifecycleHandler {
   // +featureGate=PodLifecycleSleepAction
   // +optional
   optional SleepAction sleep = 4;
+
+  // Bleep represents the duration that the container should sleep before being terminated.
+  // +featureGate=PodLifecycleBleepAction
+  // +optional
+  optional BleepAction bleep = 5;
 }
 
 // LimitRange sets resource usage limits for each kind of resource in a Namespace.

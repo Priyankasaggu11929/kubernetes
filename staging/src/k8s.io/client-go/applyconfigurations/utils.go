@@ -642,6 +642,8 @@ func ForKind(kind schema.GroupVersionKind) interface{} {
 		return &applyconfigurationscorev1.AzureFilePersistentVolumeSourceApplyConfiguration{}
 	case corev1.SchemeGroupVersion.WithKind("AzureFileVolumeSource"):
 		return &applyconfigurationscorev1.AzureFileVolumeSourceApplyConfiguration{}
+	case corev1.SchemeGroupVersion.WithKind("BleepAction"):
+		return &applyconfigurationscorev1.BleepActionApplyConfiguration{}
 	case corev1.SchemeGroupVersion.WithKind("Capabilities"):
 		return &applyconfigurationscorev1.CapabilitiesApplyConfiguration{}
 	case corev1.SchemeGroupVersion.WithKind("CephFSPersistentVolumeSource"):
