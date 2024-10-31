@@ -2507,6 +2507,12 @@ type SleepAction struct {
 	Seconds int64 `json:"seconds" protobuf:"bytes,1,opt,name=seconds"`
 }
 
+// BleepAction describes a "bleep" action.
+type BleepAction struct {
+	// Seconds is the number of seconds to sleep.
+	Seconds int64 `json:"seconds" protobuf:"bytes,1,opt,name=seconds"`
+}
+
 // Probe describes a health check to be performed against a container to determine whether it is
 // alive or ready to receive traffic.
 type Probe struct {
@@ -2924,6 +2930,11 @@ type LifecycleHandler struct {
 	// +featureGate=PodLifecycleSleepAction
 	// +optional
 	Sleep *SleepAction `json:"sleep,omitempty" protobuf:"bytes,4,opt,name=sleep"`
+
+	// Bleep represents the duration that the container should sleep before being terminated.
+	// +featureGate=PodLifecycleBleepAction
+	// +optional
+	Bleep *BleepAction `json:"bleep,omitempty" protobuf:"bytes,5,opt,name=bleep"`
 }
 
 // Lifecycle describes actions that the management system should take in response to container lifecycle

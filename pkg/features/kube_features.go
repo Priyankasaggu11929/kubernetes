@@ -477,6 +477,12 @@ const (
 	// Enables SleepAction in container lifecycle hooks
 	PodLifecycleSleepAction featuregate.Feature = "PodLifecycleSleepAction"
 
+	// owner: @jasonbraganza, @Priyankasaggu11929
+	// kep: http://kep.k8s.io/3960
+	//
+	// Enables BleepAction in container lifecycle hooks
+	PodLifecycleBleepAction featuregate.Feature = "PodLifecycleBleepAction"
+
 	// owner: @Huang-Wei
 	// kep: https://kep.k8s.io/3521
 	//

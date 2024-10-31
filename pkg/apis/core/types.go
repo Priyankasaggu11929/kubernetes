@@ -2319,6 +2319,12 @@ type SleepAction struct {
 	Seconds int64
 }
 
+// BleepAction describes a "sleep" action.
+type BleepAction struct {
+	// Seconds is the number of seconds to sleep.
+	Seconds int64
+}
+
 // Probe describes a health check to be performed against a container to determine whether it is
 // alive or ready to receive traffic.
 type Probe struct {
@@ -2612,6 +2618,10 @@ type LifecycleHandler struct {
 	// +featureGate=PodLifecycleSleepAction
 	// +optional
 	Sleep *SleepAction
+	// Bleep represents the duration that the container should sleep before being terminated.
+	// +featureGate=PodLifecycleBleepAction
+	// +optional
+	Bleep *BleepAction
 }
 
 type GRPCAction struct {
