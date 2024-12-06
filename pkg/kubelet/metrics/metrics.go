@@ -953,6 +953,17 @@ var (
 		[]string{"image_size_in_bytes"},
 	)
 
+
+	LifecycleHandlerBleepTerminated = metrics.NewCounter(
+		&metrics.CounterOpts{
+			Subsystem:      KubeletSubsystem,
+			Name:           "bleep_action_terminated_early_total",
+			Help:           "The number of times lifecycle bleep handler got terminated before it finishes",
+			StabilityLevel: metrics.ALPHA,
+		},
+	)
+
+
 	LifecycleHandlerSleepTerminated = metrics.NewCounter(
 		&metrics.CounterOpts{
 			Subsystem:      KubeletSubsystem,
@@ -1087,6 +1098,12 @@ func Register(collectors ...metrics.StableCollector) {
 
 		legacyregistry.MustRegister(LifecycleHandlerHTTPFallbacks)
 		legacyregistry.MustRegister(LifecycleHandlerSleepTerminated)
+
+
+		if utilfeature.DefaultFeatureGate.Enabled(features.PodLifecycleSleepAction) {
+			legacyregistry.MustRegister(LifecycleHandlerBleepTerminated)
+		}
+
 		legacyregistry.MustRegister(CgroupVersion)
 
 		if utilfeature.DefaultFeatureGate.Enabled(features.DynamicResourceAllocation) {
