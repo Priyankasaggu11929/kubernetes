@@ -722,6 +722,80 @@ func dropDisabledFields(
 	dropImageVolumes(podSpec, oldPodSpec)
 }
 
+
+func dropPodLifecycleBleepAction(podSpec, oldPodSpec *api.PodSpec) {
+	if utilfeature.DefaultFeatureGate.Enabled(features.PodLifecycleBleepAction) || podLifecycleBleepActionInUse(oldPodSpec) {
+		return
+	}
+
+	adjustLifecycle := func(lifecycle *api.Lifecycle) {
+		if lifecycle.PreStop != nil && lifecycle.PreStop.Bleep != nil {
+			lifecycle.PreStop.Bleep = nil
+			if lifecycle.PreStop.Exec == nil && lifecycle.PreStop.HTTPGet == nil && lifecycle.PreStop.TCPSocket == nil {
+				lifecycle.PreStop = nil
+			}
+		}
+		if lifecycle.PostStart != nil && lifecycle.PostStart.Bleep != nil {
+			lifecycle.PostStart.Bleep = nil
+			if lifecycle.PostStart.Exec == nil && lifecycle.PostStart.HTTPGet == nil && lifecycle.PostStart.TCPSocket == nil {
+				lifecycle.PostStart = nil
+			}
+		}
+	}
+
+	for i := range podSpec.Containers {
+		if podSpec.Containers[i].Lifecycle == nil {
+			continue
+		}
+		adjustLifecycle(podSpec.Containers[i].Lifecycle)
+		if podSpec.Containers[i].Lifecycle.PreStop == nil && podSpec.Containers[i].Lifecycle.PostStart == nil {
+			podSpec.Containers[i].Lifecycle = nil
+		}
+	}
+
+	for i := range podSpec.InitContainers {
+		if podSpec.InitContainers[i].Lifecycle == nil {
+			continue
+		}
+		adjustLifecycle(podSpec.InitContainers[i].Lifecycle)
+		if podSpec.InitContainers[i].Lifecycle.PreStop == nil && podSpec.InitContainers[i].Lifecycle.PostStart == nil {
+			podSpec.InitContainers[i].Lifecycle = nil
+		}
+	}
+
+	for i := range podSpec.EphemeralContainers {
+		if podSpec.EphemeralContainers[i].Lifecycle == nil {
+			continue
+		}
+		adjustLifecycle(podSpec.EphemeralContainers[i].Lifecycle)
+		if podSpec.EphemeralContainers[i].Lifecycle.PreStop == nil && podSpec.EphemeralContainers[i].Lifecycle.PostStart == nil {
+			podSpec.EphemeralContainers[i].Lifecycle = nil
+		}
+	}
+}
+
+func podLifecycleBleepActionInUse(podSpec *api.PodSpec) bool {
+	if podSpec == nil {
+		return false
+	}
+	var inUse bool
+	VisitContainers(podSpec, AllContainers, func(c *api.Container, containerType ContainerType) bool {
+		if c.Lifecycle == nil {
+			return true
+		}
+		if c.Lifecycle.PreStop != nil && c.Lifecycle.PreStop.Bleep != nil {
+			inUse = true
+			return false
+		}
+		if c.Lifecycle.PostStart != nil && c.Lifecycle.PostStart.Bleep != nil {
+			inUse = true
+			return false
+		}
+		return true
+	})
+	return inUse
+}
+
 func dropPodLifecycleSleepAction(podSpec, oldPodSpec *api.PodSpec) {
 	if utilfeature.DefaultFeatureGate.Enabled(features.PodLifecycleSleepAction) || podLifecycleSleepActionInUse(oldPodSpec) {
 		return
