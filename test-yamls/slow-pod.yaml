@@ -1,0 +1,10 @@
+# slow-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: slow-pull-pod-two
+spec:
+  containers:
+  - name: app
+    image: nvcr.io/nvidia/pytorch:23.09-py3
+    command: ["sleep", "3600"]

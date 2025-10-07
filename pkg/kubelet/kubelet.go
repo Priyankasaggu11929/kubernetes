@@ -1994,6 +1994,17 @@ func (kl *Kubelet) SyncPod(ctx context.Context, updateType kubetypes.SyncPodType
 		return false, fmt.Errorf("%s: %v", NetworkNotReadyErrorMsg, err)
 	}
 
+	// TODO(added by psaggu): Mark PodReadyToStartContainers=True as soon as sandbox + networking are ready
+	if utilfeature.DefaultFeatureGate.Enabled(features.PodReadyToStartContainersCondition) {
+		readyStatus := apiPodStatus.DeepCopy()
+		podutil.UpdatePodCondition(readyStatus, &v1.PodCondition{
+			Type:   v1.PodReadyToStartContainers,
+			Status: v1.ConditionTrue,
+		})
+		kl.statusManager.SetPodStatus(logger, pod, *readyStatus)
+		klog.V(3).InfoS("Updated PodReadyToStartContainers=True (sandbox and networking ready)", "pod", klog.KObj(pod))
+	}
+
 	// ensure the kubelet knows about referenced secrets or configmaps used by the pod
 	if !kl.podWorkers.IsPodTerminationRequested(pod.UID) {
 		if kl.secretManager != nil {
